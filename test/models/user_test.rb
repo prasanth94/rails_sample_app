@@ -25,15 +25,17 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
 
+  test "email should not be too long" do
+    @user.email = "a"*20 + "@example.com"
+    assert_not @user.valid?
+  end
+
   test "name should not be too long" do
     @user.name = "a"*51
     assert_not @user.valid?
   end
 
-  test "email should not be too long" do
-    @user.email = "a"*20 + "@example.com"
-    assert_not @user.valid?
-  end
+
 
   test "email validation should accept valid addresses" do
       valid_addresses = %w[user@example.com USER@foo.COM A_US-ER@foo.bar.org
@@ -79,5 +81,8 @@ class UserTest < ActiveSupport::TestCase
      assert_equal mixed_case_email.downcase, @user.reload.email
    end
 
+   test "authenticated? should return false for a user with nil digest" do
+      assert_not @user.authenticated?(:remember, '')
+    end
 
 end
